@@ -1,7 +1,82 @@
 package com.project.back_end.services;
 
 public class PatientService {
-// 1. **Add @Service Annotation**:
+
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.project.back_end.models.Patient;
+import com.project.back_end.repositories.PatientRepository;
+
+@Service
+public class PatientService {
+
+    private final PatientRepository patientRepository;
+
+    public PatientService(PatientRepository patientRepository) {
+        this.patientRepository = patientRepository;
+    }
+
+    @Transactional
+    public Patient addPatient(Patient patient) {
+        return patientRepository.save(patient);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Patient> getAllPatients() {
+        return patientRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Patient> getPatientById(Long patientId) {
+        return patientRepository.findById(patientId);
+    }
+
+    @Transactional
+    public String updatePatient(Long patientId, Patient updatedPatient) {
+
+        Optional<Patient> existingPatient = patientRepository.findById(patientId);
+
+        if (existingPatient.isEmpty()) {
+            return "Patient not found";
+        }
+
+        Patient patient = existingPatient.get();
+
+        patient.setFirstName(updatedPatient.getFirstName());
+        patient.setLastName(updatedPatient.getLastName());
+        patient.setEmail(updatedPatient.getEmail());
+        patient.setPhone(updatedPatient.getPhone());
+        patient.setAddress(updatedPatient.getAddress());
+
+        patientRepository.save(patient);
+
+        return "Patient updated successfully";
+    }
+
+    @Transactional
+    public String deletePatient(Long patientId) {
+
+        Optional<Patient> patient = patientRepository.findById(patientId);
+
+        if (patient.isEmpty()) {
+            return "Patient not found";
+        }
+
+        patientRepository.deleteById(patientId);
+
+        return "Patient deleted successfully";
+    }
+
+    @Transactional(readOnly = true)
+    public List<Patient> searchPatients(String keyword) {
+        return patientRepository.findByFirstNameContainingIgnoreCase(keyword);
+    }
+}// 1. **Add @Service Annotation**:
 //    - The `@Service` annotation is used to mark this class as a Spring service component. 
 //    - It will be managed by Spring's container and used for business logic related to patients and appointments.
 //    - Instruction: Ensure that the `@Service` annotation is applied above the class declaration.
