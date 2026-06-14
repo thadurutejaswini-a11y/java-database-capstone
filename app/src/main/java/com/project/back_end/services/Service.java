@@ -1,7 +1,80 @@
 package com.project.back_end.services;
 
 public class Service {
-// 1. **@Service Annotation**
+package com.project.back_end.models;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "services")
+public class Service {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long serviceId;
+
+    @Column(nullable = false)
+    private String serviceName;
+
+    @Column(length = 500)
+    private String description;
+
+    @Column(nullable = false)
+    private Double cost;
+
+    public Service() {
+    }
+
+    public Service(Long serviceId, String serviceName,
+                   String description, Double cost) {
+        this.serviceId = serviceId;
+        this.serviceName = serviceName;
+        this.description = description;
+        this.cost = cost;
+    }
+
+    public Long getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(Long serviceId) {
+        this.serviceId = serviceId;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Double getCost() {
+        return cost;
+    }
+
+    public void setCost(Double cost) {
+        this.cost = cost;
+    }
+
+    @Override
+    public String toString() {
+        return "Service{" +
+                "serviceId=" + serviceId +
+                ", serviceName='" + serviceName + '\'' +
+                ", description='" + description + '\'' +
+                ", cost=" + cost +
+                '}';
+    }
+}// 1. **@Service Annotation**
 // The @Service annotation marks this class as a service component in Spring. This allows Spring to automatically detect it through component scanning
 // and manage its lifecycle, enabling it to be injected into controllers or other services using @Autowired or constructor injection.
 
