@@ -2,7 +2,87 @@ package com.project.back_end.services;
 
 public class PrescriptionService {
     
- // 1. **Add @Service Annotation**:
+
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.project.back_end.models.Prescription;
+import com.project.back_end.repositories.PrescriptionRepository;
+
+@Service
+public class PrescriptionService {
+
+    private final PrescriptionRepository prescriptionRepository;
+
+    public PrescriptionService(PrescriptionRepository prescriptionRepository) {
+        this.prescriptionRepository = prescriptionRepository;
+    }
+
+    @Transactional
+    public Prescription addPrescription(Prescription prescription) {
+        return prescriptionRepository.save(prescription);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Prescription> getAllPrescriptions() {
+        return prescriptionRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Prescription> getPrescriptionById(Long prescriptionId) {
+        return prescriptionRepository.findById(prescriptionId);
+    }
+
+    @Transactional
+    public String updatePrescription(Long prescriptionId,
+                                     Prescription updatedPrescription) {
+
+        Optional<Prescription> existingPrescription =
+                prescriptionRepository.findById(prescriptionId);
+
+        if (existingPrescription.isEmpty()) {
+            return "Prescription not found";
+        }
+
+        Prescription prescription = existingPrescription.get();
+
+        prescription.setMedicineName(
+                updatedPrescription.getMedicineName());
+        prescription.setDosage(
+                updatedPrescription.getDosage());
+        prescription.setInstructions(
+                updatedPrescription.getInstructions());
+
+        prescriptionRepository.save(prescription);
+
+        return "Prescription updated successfully";
+    }
+
+    @Transactional
+    public String deletePrescription(Long prescriptionId) {
+
+        Optional<Prescription> prescription =
+                prescriptionRepository.findById(prescriptionId);
+
+        if (prescription.isEmpty()) {
+            return "Prescription not found";
+        }
+
+        prescriptionRepository.deleteById(prescriptionId);
+
+        return "Prescription deleted successfully";
+    }
+
+    @Transactional(readOnly = true)
+    public List<Prescription> getPrescriptionsByAppointment(Long appointmentId) {
+        return prescriptionRepository.findByAppointmentAppointmentId(
+                appointmentId);
+    }
+}// 1. **Add @Service Annotation**:
 //    - The `@Service` annotation marks this class as a Spring service component, allowing Spring's container to manage it.
 //    - This class contains the business logic related to managing prescriptions in the healthcare system.
 //    - Instruction: Ensure the `@Service` annotation is applied to mark this class as a Spring-managed service.
