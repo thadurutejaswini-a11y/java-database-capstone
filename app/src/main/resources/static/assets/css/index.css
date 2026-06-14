@@ -83,6 +83,21 @@ nav a:hover {
 .btn-success:hover {
     background-color: #1e7e34;
 }
+.btn-danger {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #dc3545;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #a71d2a;
+}
 .features {
     display: flex;
     justify-content: center;
@@ -90,6 +105,7 @@ nav a:hover {
     gap: 20px;
     padding: 40px 20px;
 }
+
 
 .feature-card {
     background: white;
