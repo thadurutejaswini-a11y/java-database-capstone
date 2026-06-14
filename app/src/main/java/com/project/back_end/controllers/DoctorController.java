@@ -3,7 +3,76 @@ package com.project.back_end.controllers;
 
 public class DoctorController {
 
-// 1. Set Up the Controller Class:
+
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.project.back_end.models.Doctor;
+import com.project.back_end.services.DoctorService;
+
+@RestController
+@RequestMapping("/api/doctors")
+@CrossOrigin(origins = "*")
+public class DoctorController {
+
+    private final DoctorService doctorService;
+
+    public DoctorController(DoctorService doctorService) {
+        this.doctorService = doctorService;
+    }
+
+    @PostMapping
+    public ResponseEntity<Doctor> addDoctor(@RequestBody Doctor doctor) {
+        Doctor savedDoctor = doctorService.addDoctor(doctor);
+        return ResponseEntity.ok(savedDoctor);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Doctor>> getAllDoctors() {
+        return ResponseEntity.ok(doctorService.getAllDoctors());
+    }
+
+    @GetMapping("/{doctorId}")
+    public ResponseEntity<?> getDoctorById(@PathVariable Long doctorId) {
+
+        Optional<Doctor> doctor = doctorService.getDoctorById(doctorId);
+
+        if (doctor.isPresent()) {
+            return ResponseEntity.ok(doctor.get());
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{doctorId}")
+    public ResponseEntity<String> updateDoctor(
+            @PathVariable Long doctorId,
+            @RequestBody Doctor doctor) {
+
+        String response = doctorService.updateDoctor(doctorId, doctor);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{doctorId}")
+    public ResponseEntity<String> deleteDoctor(
+            @PathVariable Long doctorId) {
+
+        String response = doctorService.deleteDoctor(doctorId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/specialization/{specialization}")
+    public ResponseEntity<List<Doctor>> getDoctorsBySpecialization(
+            @PathVariable String specialization) {
+
+        return ResponseEntity.ok(
+                doctorService.getDoctorsBySpecialization(specialization));
+    }
+}// 1. Set Up the Controller Class:
 //    - Annotate the class with `@RestController` to define it as a REST controller that serves JSON responses.
 //    - Use `@RequestMapping("${api.path}doctor")` to prefix all endpoints with a configurable API path followed by "doctor".
 //    - This class manages doctor-related functionalities such as registration, login, updates, and availability.
