@@ -69,7 +69,20 @@ nav a:hover {
 .btn:hover {
     background-color: #2980b9;
 }
+.btn-success {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
 
+.btn-success:hover {
+    background-color: #1e7e34;
+}
 .features {
     display: flex;
     justify-content: center;
