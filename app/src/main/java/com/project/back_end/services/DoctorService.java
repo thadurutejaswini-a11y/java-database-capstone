@@ -2,7 +2,81 @@ package com.project.back_end.services;
 
 public class DoctorService {
 
-// 1. **Add @Service Annotation**:
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.project.back_end.models.Doctor;
+import com.project.back_end.repositories.DoctorRepository;
+
+@Service
+public class DoctorService {
+
+    private final DoctorRepository doctorRepository;
+
+    public DoctorService(DoctorRepository doctorRepository) {
+        this.doctorRepository = doctorRepository;
+    }
+
+    @Transactional
+    public Doctor addDoctor(Doctor doctor) {
+        return doctorRepository.save(doctor);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Doctor> getAllDoctors() {
+        return doctorRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Doctor> getDoctorById(Long doctorId) {
+        return doctorRepository.findById(doctorId);
+    }
+
+    @Transactional
+    public String updateDoctor(Long doctorId, Doctor updatedDoctor) {
+
+        Optional<Doctor> existingDoctor = doctorRepository.findById(doctorId);
+
+        if (existingDoctor.isEmpty()) {
+            return "Doctor not found";
+        }
+
+        Doctor doctor = existingDoctor.get();
+
+        doctor.setFirstName(updatedDoctor.getFirstName());
+        doctor.setLastName(updatedDoctor.getLastName());
+        doctor.setEmail(updatedDoctor.getEmail());
+        doctor.setPhone(updatedDoctor.getPhone());
+        doctor.setSpecialization(updatedDoctor.getSpecialization());
+
+        doctorRepository.save(doctor);
+
+        return "Doctor updated successfully";
+    }
+
+    @Transactional
+    public String deleteDoctor(Long doctorId) {
+
+        Optional<Doctor> doctor = doctorRepository.findById(doctorId);
+
+        if (doctor.isEmpty()) {
+            return "Doctor not found";
+        }
+
+        doctorRepository.deleteById(doctorId);
+
+        return "Doctor deleted successfully";
+    }
+
+    @Transactional(readOnly = true)
+    public List<Doctor> getDoctorsBySpecialization(String specialization) {
+        return doctorRepository.findBySpecialization(specialization);
+    }
+}// 1. **Add @Service Annotation**:
 //    - This class should be annotated with `@Service` to indicate that it is a service layer class.
 //    - The `@Service` annotation marks this class as a Spring-managed bean for business logic.
 //    - Instruction: Add `@Service` above the class declaration.
