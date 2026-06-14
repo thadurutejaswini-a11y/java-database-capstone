@@ -2,7 +2,89 @@ package com.project.back_end.controllers;
 
 public class PrescriptionController {
     
-// 1. Set Up the Controller Class:
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.project.back_end.models.Prescription;
+import com.project.back_end.services.PrescriptionService;
+
+@RestController
+@RequestMapping("/api/prescriptions")
+@CrossOrigin(origins = "*")
+public class PrescriptionController {
+
+    private final PrescriptionService prescriptionService;
+
+    public PrescriptionController(PrescriptionService prescriptionService) {
+        this.prescriptionService = prescriptionService;
+    }
+
+    @PostMapping
+    public ResponseEntity<Prescription> addPrescription(
+            @RequestBody Prescription prescription) {
+
+        Prescription savedPrescription =
+                prescriptionService.addPrescription(prescription);
+
+        return ResponseEntity.ok(savedPrescription);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Prescription>> getAllPrescriptions() {
+        return ResponseEntity.ok(
+                prescriptionService.getAllPrescriptions());
+    }
+
+    @GetMapping("/{prescriptionId}")
+    public ResponseEntity<?> getPrescriptionById(
+            @PathVariable Long prescriptionId) {
+
+        Optional<Prescription> prescription =
+                prescriptionService.getPrescriptionById(prescriptionId);
+
+        if (prescription.isPresent()) {
+            return ResponseEntity.ok(prescription.get());
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{prescriptionId}")
+    public ResponseEntity<String> updatePrescription(
+            @PathVariable Long prescriptionId,
+            @RequestBody Prescription prescription) {
+
+        String response =
+                prescriptionService.updatePrescription(
+                        prescriptionId,
+                        prescription);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{prescriptionId}")
+    public ResponseEntity<String> deletePrescription(
+            @PathVariable Long prescriptionId) {
+
+        String response =
+                prescriptionService.deletePrescription(prescriptionId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/appointment/{appointmentId}")
+    public ResponseEntity<List<Prescription>> getPrescriptionsByAppointment(
+            @PathVariable Long appointmentId) {
+
+        return ResponseEntity.ok(
+                prescriptionService.getPrescriptionsByAppointment(
+                        appointmentId));
+    }
+}// 1. Set Up the Controller Class:
 //    - Annotate the class with `@RestController` to define it as a REST API controller.
 //    - Use `@RequestMapping("${api.path}prescription")` to set the base path for all prescription-related endpoints.
 //    - This controller manages creating and retrieving prescriptions tied to appointments.
